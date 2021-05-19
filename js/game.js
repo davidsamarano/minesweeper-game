@@ -1,9 +1,14 @@
 'use strict'
 
-var gNums;
-var gLevel = 16;  
-var gCurrNum;
-var gCurrNum;
+const LIVES = `❤`;
+var gLivesCount = 2;  // you starts frome 0 to 2 with 3 counting lives!!
+
+const MINE = `💣`;
+var gMinesCount = 2;      //////////  as defult, but needs to get from id !!
+
+var gCellsData;
+var gLevel = 16;
+var gCurrData;          /////// data to equalize to !!
 var gTime;
 var gInterval;
 
@@ -11,15 +16,21 @@ var gInterval;
 
 function initGame() {
 
-    fillNums();
-    renderNums();
-    gCurrNum = 1;
-    renderNextNum();
-    stopTime();  
-    restTime();  
+    var elSmily = document.querySelector('.smily-start');
+    elSmily.innerHTML = `😃`;
+    var elLives = document.querySelector('.lives');
+    elLives.innerHTML = `❤ ❤ ❤`;
+
+    gLivesCount = 3;
+    fillCellsData(gMinesCount);
+    renderCellsData();
+    gCurrData = 1;              /////// data to equalize to !!
+    renderNextCellData();
+    stopTime();
+    restTime();
 }
 
-function renderNums() {
+function renderCellsData() {
 
     var currNum;
     var length = Math.sqrt(gLevel);  // rowspan & colspan;
@@ -35,7 +46,7 @@ function renderNums() {
 
         for (var j = 0; j < length; j++) {
 
-            currNum = gNums[currIdx];
+            currNum = gCellsData[currIdx];
             strHtml += `<td class="cell" onclick="cellClick(this)">${currNum}</td>`;
             currIdx++;
         }
@@ -45,25 +56,32 @@ function renderNums() {
     elBoard.innerHTML = strHtml;
 }
 
-function cellClick(elCellNum) {
+function cellClick(elCellData) {
 
-    if (!gInterval && gCurrNum === 1) {  // still first num, and internal stiil '0'!!
+    if (elCellData.innerText === '💣' && !gLivesCount) {
+        gameOver(false);
+        return;
+    } else if (elCellData.innerText === '💣') {
+        gLivesCount--;
+    }
+
+    if (!gInterval && gCurrData === 1) {  // still first num, and internal stiil '0'!!
 
         gInterval = setInterval(setTime, 10); // min interval is 10 miliseconds!!
     }
 
-    var selectedNum = +elCellNum.innerText; // a must string to numeric!!
+    var selectedNum = +elCellData.innerText; // a must string to numeric!!
 
-    if (selectedNum === gCurrNum) {
+    if (selectedNum === gCurrData) {
 
-        elCellNum.classList.add('.correct-choise');
-        if (gCurrNum < gLevel) {
+        elCellData.classList.add('.correct-num');
+        if (gCurrData < gLevel) {
 
-            gCurrNum++;         // model
-            renderNextNum();    // Dom
+            gCurrData++;         // model
+            renderNextCellData();    // Dom
         } else {
 
-            renderWin()
+            renderGameOver(true);
         }
     }
 }
@@ -74,43 +92,30 @@ function changeLevel(level) {
     initGame();
 }
 
-function renderNextNum() {
-    var elNextNum = document.querySelector('.next-number');
-    elNextNum.innerText = ' ' + gCurrNum;
+function renderNextCellData() {
+    var elNextNum = document.querySelector('.score');
+    elNextNum.innerText = ' ' + gCurrData;
 }
 
+function fillCellsData(minseCount) {
 
-function renderMessage(isVictory) {
+    var Cells = [];
+    var count = 0;
+    while (count < minseCount) {
+        Cells.push(MINE);
+        count++;
+    }
+    for (var i = 1; i <= gLevel - minseCount; i++) {
 
-    var elMessege = document.querySelector('.messege-title');
-    elMessege.style.innerText = isVictory ? "You win!!" : "You win!!"
-    elMessege.style.display = 'block';
+        Cells.push(i);
+    }
+    gCellsData = shuffle(Cells);
+}
+
+function gameOver(isVictory) {
+
     stopTime();
+
+    var elSmily = document.querySelector('.smily-start');
+    elSmily.innerHTML = isVictory ? `😎` : `🤯`;
 }
-
-
-
-// -----------------------------------
-
-function fillNums() {
-
-    var nums = [];
-    for (var i = 1; i <= gLevel; i++) {
-
-        nums.push(i);
-    }
-    gNums = shuffle(nums);
-}
-
-function shuffle(nums) {
-
-    var rndNums = [];
-    while (nums.length > 0) {
-
-        var rndIdx = getRandomInt(0, nums.length);
-        rndNums.push(nums.splice(rndIdx, 1));    //  push to rndNums than remove from nums
-    }
-
-    return rndNums;
-}
-

@@ -24,31 +24,26 @@
                     <span>Beginner<button data-mines="2" class="level" onclick="changeLevel(16)"></button></span>
                     <span>Medium<button data-mines="12" class="level" onclick="changeLevel(64)"></button></span>
                     <span>Expert<button data-mines="30" class="level" onclick="changeLevel(144)"></button></span>
-                    
+
                 </div>
 
-                <button class="smily-start" onclick="initGame()">🙂</button>
+                <span class="lives"></span>
 
-                <button class="mine" onclick="blowUp()">"💥"</button>
-
-                <!-- <h3 class="win-message"> Next Number:<span class="next-number"> 1</span></h3> -->
-                <pre> Score:<span class="next-number"></span>   <span class="timer"></span></pre>
-                <h3 class="messege-title">You win!!</h3>
+                <pre><span class="score"></span>  <button class="smily-start" onclick="initGame()"></button> <span class="timer"></span></pre>
 
             </th>
 
         </thead>
 
-        <tbody class="board">
+         <!-- fix right mouse priority, Than UPDATE:  onclick="mouseClick(event)">  -->
+        <tbody class="board" onmousedown="WhichButton(event)">
 
         </tbody>
 
     </table>
 
-
     <script src="js/game.js"></script>
     <script src="js/util.js"></script>
-    <script src="js/mines.js"></script>
 
 </body>
 
