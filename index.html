@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
-    <title>Minesweeper game 1.2</title>
+    <title>Minesweeper game 1.3</title>
 </head>
 
 <body onload="initGame()">
@@ -28,7 +28,6 @@
                 </div>
 
                 <span class="lives"></span>
-
                 <pre><span class="score"></span>  <button class="smily-start" onclick="initGame()"></button> <span class="timer"></span></pre>
 
             </th>
@@ -36,7 +35,8 @@
         </thead>
 
         <!-- fix right mouse priority, Than UPDATE:  onclick="mouseClick(event)">  -->
-        <tbody id="myClick" oncontextmenu="event.preventDefault();" class="board"></tbody>
+        <!-- <tbody id="myClick" oncontextmenu="event.preventDefault();" class="board"></tbody> -->
+        <tbody oncontextmenu="event.preventDefault();" class="board"></tbody>
         <!-- <tbody id="myClick" onclick="WhichButton(event)" class="board"></tbody> -->
 
         </tbody>

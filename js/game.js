@@ -1,8 +1,9 @@
 'use strict'
 
 const MINE = `💣`;
-const LIVES = `❤`;
-var gLivesCount = 3;  // (check: you starts frome 0 to 2 with 3 counting lives!!)
+
+var gLivesCount;  
+console.log('gLivesCount: ', gLivesCount);
 
 
 var gLevel = {      // defult;
@@ -22,19 +23,19 @@ var gGame;  // update object
 function initGame() {
 
     gGame = {
-        isOn: false,
+        isOn: true,
         shownCount: 0,
         markedCount: 0,
         secsPassed: 0
     };
-    gBoard = createBoard();     // state: manualy...
+    gBoard = createBoard();
 
     var elSmily = document.querySelector('.smily-start');
     elSmily.innerHTML = `😃`;
 
-    var elLives = document.querySelector('.lives');
-    elLives.innerHTML = `❤ ❤ ❤`;
     gLivesCount = 3;
+    var elLives = document.querySelector('.lives');
+    elLives.innerHTML = renderLifeEmoji();
 
     stopTime();
     restTime();
@@ -59,11 +60,16 @@ function renderBoard(board) {
 
             var innerText = ` `;
 
-            if (board[i][j].isShown) {
+            if (board[i][j].isMarked) {
+
+                innerText = `🚩`;
+            } else if (board[i][j].isShown) {
+
                 if (board[i][j].isMine) {
-                    
+
                     innerText = `💣`
                 } else if (+board[i][j].minesAroundCount) {
+
                     innerText = +board[i][j].minesAroundCount;
                 } else {
 
@@ -75,8 +81,8 @@ function renderBoard(board) {
 
             strHtml += `<td data-i="${i}" data-j="${j}"
             class="${className}" 
-            style="color: ${minesAroundCountColor}; font-size: 1.2em;"           
-            onclick="cellClick(this,${i},${j})">${innerText}</td>`
+            style="color: ${minesAroundCountColor};"           
+            onclick="cellClicked(this,${i},${j})">${innerText}</td>`
         }
         strHtml += `</tr>`;
     }
@@ -84,29 +90,53 @@ function renderBoard(board) {
     elBoard.innerHTML = strHtml;
 }
 
-function revealContent(elCell, i, j) {  // left click functionality (+start timer !!);
-
-    gBoard[i][j].isShown = true; // Update model; 
-    elCell.classList.remove('.cell'); // Update DOM;
-    renderBoard(gBoard);
-}
-
 function renderColor(minesAroundCount) {
 
-    if (minesAroundCount === 1) return `blue`;
-    if (minesAroundCount === 2) return `green`;
-    if (minesAroundCount === 3) return `red`;
-    if (minesAroundCount === 4) return `darkblue`;
+    switch (minesAroundCount) {
+        case 1:
+            return `blue`;
+        case 2:
+            return `green`;
+        case 3:
+            return `red`;
+        case 4:
+            return `darkblue`;
+        case 5:
+            return `rgb(93, 62, 122)`;
+        case 6:
+            return `blueviolet`;
+        case 7:
+            return `yellow`;
+        case 8:
+            return `brown`;
+    }
+}
+function renderLifeEmoji() {
 
+
+    console.log('emoji: ', gLivesCount);
+
+    switch (gLivesCount) {
+        case 3:
+            return `❤❤❤`;
+        case 2:
+            return `❤❤`;
+        case 1:
+            return `❤`;
+        case 0:
+            return ` `;
+    }
 }
 
 function renderTimer() {
 
-    if (!gInterval) {  // still first num, and internal stiil '0'!!
+    if (gGame.isOn) {
 
-        gInterval = setInterval(setTime, 10); // min interval is 10 miliseconds!!
+        if (!gInterval) {  // still first num, and internal stiil '0'!!
+
+            gInterval = setInterval(setTime, 10); // min interval is 10 miliseconds!!
+        }
     }
-
 }
 
 function renderScore() {
@@ -228,65 +258,63 @@ function createBoard() {
 
 // -------------------------------------------------------------------
 
-function cellClick(elCell, cellI, cellJ) {
 
-    renderScore();
-    revealContent(elCell, cellI, cellJ);
-    //check lives :
-    // if (elCell.innerText === '💣' && !gLivesCount) {
-    //     gameOver(false);
-    //     return;
-    // } else if (elCell.innerText === '💣') {
-    //     gLivesCount--;
-    // }
-    // -------------------------
+function cellClicked(elCell, cellI, cellJ) {
 
-    // if (!gInterval) {  // still first num, and internal stiil '0'!!
+    if (gGame.isOn) {
 
-    //     gInterval = setInterval(setTime, 10); // min interval is 10 miliseconds!!
-    // }
+        revealContent(elCell, cellI, cellJ);
+        renderScore();
+        renderTimer();
 
-    // **********************************************************************************************
+        // check lives :
+        if (elCell.innerText === '💣' && gLivesCount === 0) {
+            gameOver(false);
+            return;
+        } else if (elCell.innerText === '💣') {
 
-//     var selectedNum = +elCell.innerText; // a must string to numeric!!
+            gLivesCount--;
+            console.log('gLivesCount: ', gLivesCount);
+        }
 
-//     if (selectedNum === gCurrData) {
+    }
 
-//         elCell.classList.add('.correct-num');
-//         if (gCurrData < gLevel) {
+    if (selectedNum === gCurrData) {
 
-//             gCurrData++;         // model
-//             renderNextCellData();    // Dom
-//         } else {
+        if (gCurrData < gLevel) {
 
-//             renderGameOver(true);
-//         }
-//     }
+            gCurrData++;         // model
+            renderNextCellData();    // Dom
+        } else {
+
+            renderGameOver(true);
+        }
+    }
 }                                                                       //    <<<----------
 
-// *********************************************************************************************************
-
-// Right click flags/unflags  --> toggle
-
-// add toggle game btn
-
-// ------------------------------------------------
-
-function toggleGame(elBtn) {
-    if (gGameInterval) {
-        clearInterval(gGameInterval)
-        gGameInterval = null;
-        elBtn.innerText = 'Play';
-    } else {
-        gGameInterval = setInterval(play, GAME_FREQ);
-        elBtn.innerText = 'Pause';
-    }
-}
-
 function renderRightMouseClick() {
-    cellClick(1);
+    cellClicked(1);
 }
 
+function cellMarked(elCell) {   //Called on right click to mark a cell (suspected to be a mine)
+
+    gGame.markedCount++;
+}
+
+function revealContent(elCell, i, j) {  // left click functionality (+start timer !!);
+
+    gBoard[i][j].isShown = true; // Update model; 
+    elCell.classList.remove('.cell'); // Update DOM;
+    renderBoard(gBoard);
+}
+
+function gameOver(isVictory) {
+
+    stopTime();
+    gGame.isOn = false;
+    var elSmily = document.querySelector('.smily-start');
+    elSmily.innerHTML = isVictory ? `😎` : `🤯`;
+}
 
 
 
