@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
-    <title>Minesweeper game</title>
+    <title>Minesweeper game 1.2</title>
 </head>
 
 <body onload="initGame()">
@@ -21,9 +21,9 @@
 
                 <div class="preferances">
 
-                    <span>Beginner<button data-mines="2" class="level" onclick="changeLevel(16)"></button></span>
-                    <span>Medium<button data-mines="12" class="level" onclick="changeLevel(64)"></button></span>
-                    <span>Expert<button data-mines="30" class="level" onclick="changeLevel(144)"></button></span>
+                    <span>Beginner<button class="level" onclick="changeLevel(4,2)"></button></span>
+                    <span>Medium<button class="level" onclick="changeLevel(8,12)"></button></span>
+                    <span>Expert<button class="level" onclick="changeLevel(12,30)"></button></span>
 
                 </div>
 
@@ -35,8 +35,9 @@
 
         </thead>
 
-         <!-- fix right mouse priority, Than UPDATE:  onclick="mouseClick(event)">  -->
-        <tbody class="board" onmousedown="WhichButton(event)">
+        <!-- fix right mouse priority, Than UPDATE:  onclick="mouseClick(event)">  -->
+        <tbody id="myClick" oncontextmenu="event.preventDefault();" class="board"></tbody>
+        <!-- <tbody id="myClick" onclick="WhichButton(event)" class="board"></tbody> -->
 
         </tbody>
 

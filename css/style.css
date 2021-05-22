@@ -33,11 +33,18 @@ pre {
     width: 38px;
     height: 30px;
     background-color:darkgray;
-    border: rgb(136, 128, 128) 4px solid;
+    border: rgb(214, 214, 214) 4px solid;
 } 
 
 .cell:hover {
     cursor: pointer;
+}
+
+.under-cell{
+    width: 38px;
+    height: 30px;
+    background-color:rgb(145, 145, 145);
+    border: rgb(97, 97, 97) 4px solid;
 }
 
 button {
@@ -83,10 +90,7 @@ button:hover {
     background-color: black;
 }
 
-.score{
-    /* width: 59px;
-    height: 47px; */
-    
+.score{ 
     color: red;
     text-shadow: 2px 2px rgb(116, 41, 41);
     border: 3px rgb(231, 227, 227) solid;
@@ -94,7 +98,6 @@ button:hover {
     background-color: black;
 }
 
- /* // place and colors -->> UPDATE LATER !!!  */
 .smily-start{               
     font-size: 1em;
     background-color: rgb(104, 72, 248);
